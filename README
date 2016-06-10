@@ -1,0 +1,89 @@
+PEERLOCK PROOF OF CONCEPT SCRIPT
+================================
+
+NANOG: https://www.nanog.org/meetings/abstract?id=2860
+
+Example docs: http://instituut.net/~job/peerlock_manual.pdf
+
+You'll need to connect this to your database and evaluate if the constraints
+make sense for you.
+
+--------
+
+$ ./peerlock.py -J
+
+INFO: generating towards vendor JunOS
+OK: constraint 3: rule 1: protected_asn 174 connects in rtr_north_america, rtr_europe
+OK: constraint 3: rule 2: protected_asn 1299 connects in rtr_north_america, rtr_europe
+OK: constraint 3: rule 3: protected_asn 3356 connects in rtr_north_america, rtr_asia, rtr_europe
+ERROR: constraint 3: in filter rule 4: protected_asn 7018 is not connected in enough regions.
+OK: constraint 1: rule 5: allowed_upstream 3356 connects in enough regions: rtr_north_america, rtr_asia, rtr_europe
+OK: constraint 1: rule 6: allowed_upstream 1299 connects in enough regions: rtr_north_america, rtr_europe
+OK: constraint 1: rule 7: allowed_upstream 3356 connects in enough regions: rtr_north_america, rtr_asia, rtr_europe
+OK: constraint 3: rule 8: protected_asn 2914 connects in rtr_north_america, rtr_asia, rtr_europe, rtr_south_america
+OK: constraint 1: rule 9: allowed_upstream 2914 connects in enough regions: rtr_north_america, rtr_asia, rtr_europe, rtr_south_america
+OK: constraint 4: rule 9: allowed_upstream 2914 connects in europe
+
+INFO: tested all rules, router configs will follow:
+
+router: rtr_north_america
+  policy-options {
+    as-path lock-AS101-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS102-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS103-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS104-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS202-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS500-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS174-in ".* (1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS1299-in ".* (174|2914|3356|3491|7018) .*";
+    as-path lock-AS3356-in ".* (174|1299|2914|7018) .*";
+    as-path lock-AS3549-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS6762-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS7018-in ".* (174|1299|2914|3356|3491|6830) .*";
+    as-path lock-AS3491-in ".* (174|1299|2914|3356|6830|7018) .*";
+    as-path lock-AS6830-in ".* (174|1299|2914|3356|3491|7018) .*";
+    as-path lock-AS1239-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS2914-in ".* (174|1299|3356|3491|6830|7018) .*";
+  }
+
+router: rtr_asia
+  policy-options {
+    as-path lock-AS101-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS102-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS104-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS201-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS700-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS3356-in ".* (174|1299|2914|7018) .*";
+    as-path lock-AS6762-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS3491-in ".* (174|1299|2914|3356|6830|7018) .*";
+    as-path lock-AS38561-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS1239-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS2914-in ".* (174|1299|3356|3491|6830|7018) .*";
+  }
+
+router: rtr_europe
+  policy-options {
+    as-path lock-AS101-in ".* (174|1299|2914|3356|3491|6830|7018|65000) .*";
+    as-path lock-AS102-in ".* (174|1299|2914|3356|3491|6830|7018|65000) .*";
+    as-path lock-AS103-in ".* (174|1299|2914|3356|3491|6830|7018|65000) .*";
+    as-path lock-AS201-in ".* (174|1299|2914|3356|3491|6830|7018|65000) .*";
+    as-path lock-AS600-in ".* (174|1299|2914|3356|3491|6830|7018|65000) .*";
+    as-path lock-AS174-in ".* (1299|2914|3356|3491|6830|7018|65000) .*";
+    as-path lock-AS1299-in ".* (174|2914|3356|3491|7018|65000) .*";
+    as-path lock-AS2914-in ".* (174|1299|3356|3491|6830|7018) .*";
+    as-path lock-AS3356-in ".* (174|1299|2914|7018|65000) .*";
+    as-path lock-AS3549-in ".* (174|1299|2914|3356|3491|6830|7018|65000) .*";
+    as-path lock-AS6762-in ".* (174|1299|2914|3356|3491|6830|7018|65000) .*";
+    as-path lock-AS3491-in ".* (174|1299|2914|3356|6830|7018|65000) .*";
+    as-path lock-AS6830-in ".* (174|1299|2914|3356|3491|7018|65000) .*";
+    as-path lock-AS1239-in ".* (174|1299|2914|3356|3491|6830|7018|65000) .*";
+    as-path lock-AS65000-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+  }
+
+router: rtr_south_america
+  policy-options {
+    as-path lock-AS101-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS800-in ".* (174|1299|2914|3356|3491|6830|7018) .*";
+    as-path lock-AS2914-in ".* (174|1299|3356|3491|6830|7018) .*";
+  }
+
