@@ -1,0 +1,86 @@
+Dear Peering partner Example_Network,
+
+TOPIC: NTT seeking permission for the deployment of NTT "Peer Locking"
+    route leak prevention mechanism.
+
+ATTACHED: PDF with technical specification for circulation in your
+    engineering department.
+
+NTT's Peer Locking mechanism is an effort to increase the Internet's
+routing security by protecting NTT's BGP neighbours with an additional
+layer of filtering.
+
+We seek your explicit consent to permit NTT to deploy certain as-path
+filters inside AS 2914. If you agree, the risk of your prefixes being
+accepted via unauthorised paths during route leak events will be
+significantly reduced on a global scale. You are encouraged to replicate
+this mechanism in your own network!
+
+There are no fees associated with Peer Locking, no contractual or legal
+ramifications. Your network being designated with "Protected ASN" status
+is entirely optional. You may request NTT to change this status at any
+time. No operational impact of any nature is expected should you permit
+NTT to deploy this additional layer of protection.
+ 
+Peer Locking relies on peering partners communicating to NTT which
+networks are authorised upstreams, or declaring that they have no IP
+transit upstreams at all. NTT's implementation allows very fast
+network-wide updates should the situation demand swift action. The
+implementation offers granularity up to the continent level: NTT can
+configure the protection mechanism to accomodate a peering partner
+whom is transit-free in one continent but not in others.
+
+Terminology:
+------------
+    "Protected ASN" - this is your ASN (AS EXAMPLE_ASN), all prefixes which
+    contain a Protected ASN in the AS_PATH but are received via an
+    unauthorised eBGP neighbour will be rejected.
+
+    "Allowed Upstream" - a Protected ASN may indicate to NTT that a
+    certain ASN is allowed to propagate prefixes which contain the
+    Protected ASN in the AS_PATH. Allowed Upstreams can be configured
+    globally, per region or set to "None".
+
+Both Protected ASNs and Allowed Upstreams must be directly connected to
+NTT AS2914 backbone in multiple regions to be considered eligible for
+either of the two roles. 
+
+Default operating mode
+----------------------
+
+When a peering partner agrees to be elevated to the status of Protected
+ASN (by default) NTT will only accept prefixes which contain the
+Protected ASN in the AS_PATH if they are received over the direct BGP
+sessions between NTT and the Protected ASN. In most cases, especially
+with larger peering partners, this default operating mode is sufficient.
+
+In some cases a peering partner might want NTT to accept prefixes via an
+intermediate network. NTT needs to be made aware of such cases. Peers
+need to proactively communicate who their Allowed Upstreams are.
+
+Communicating changes to NTT
+----------------------------
+
+Any change requests related to Peer Locking can be emailed to the NTT
+NOC at noc@ntt.net. Our NOC will assign the request an ID for tracking
+purposes and work with NTT's engineering department to review the
+requested change. We strive to resolve Peer Locking change requests
+within 24 hours.
+
+Conclusion
+==========
+
+NTT believes that the Peer Locking mechanism, when applied to the twenty
+largest networks in the world, will greatly reduce the impact and spread
+of routeleaks.
+
+NTT actively monitors the default-free zone through tools such as
+https://puck.nether.net/bgp/leakinfo.cgi and we have already noticed a
+vast improvement for networks that agreed to be a Protected ASN.
+
+We hope we can add you to the list of Protected ASNs too!
+
+Kind regards,
+
+Job Snijders
+NTT Communications
