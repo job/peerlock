@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
     Peerlock test program
 
@@ -40,20 +40,20 @@ network_topology = {
 # command line arguments
 import sys
 if len(sys.argv) < 2:
-    print "INFO: use -h for options"
+    print("INFO: use -h for options")
     sys.exit()
 if sys.argv[1] in ["-h", "--help"]:
-    print "-X for IOX output"
-    print "-J for JunOS output"
+    print("-X for IOX output")
+    print("-J for JunOS output")
     sys.exit(0)
 elif sys.argv[1] == "-X":
     vendor = "IOX"
 elif sys.argv[1] == "-J":
     vendor = "JunOS"
 else:
-    print "INFO: use -h for options"
+    print("INFO: use -h for options")
 
-print "INFO: generating towards vendor %s" % vendor
+print("INFO: generating towards vendor %s" % vendor)
 
 
 # shorthand function for easy access to variables
@@ -84,15 +84,15 @@ for rule in filter_table:
     if allowed_upstream:
 
         if len(inverted_topology[allowed_upstream]) < 2:
-            print "ERROR: constraint 2: in filter rule %s: %s is listed as \
+            print("ERROR: constraint 2: in filter rule %s: %s is listed as \
 allowed_upstream but not connected in multiple regions" \
-                % (rule, allowed_upstream)
+                % (rule, allowed_upstream) )
 
         else:
-            print "OK: constraint 1: rule %s: allowed_upstream %s connects in \
+            print("OK: constraint 1: rule %s: allowed_upstream %s connects in \
 enough regions: %s" \
                 % (rule, allowed_upstream,
-                   ", ".join(inverted_topology[allowed_upstream]))
+                   ", ".join(inverted_topology[allowed_upstream])) )
 
     """
     constraint 3:
@@ -107,13 +107,13 @@ enough regions: %s" \
     if not allowed_upstream and region == "everywhere":
 
         if len(inverted_topology[protected_asn]) < 2:
-            print "ERROR: constraint 3: in filter rule %s: protected_asn %s \
-is not connected in enough regions." % (rule, protected_asn)
+            print("ERROR: constraint 3: in filter rule %s: protected_asn %s \
+is not connected in enough regions." % (rule, protected_asn) )
 
         else:
-            print "OK: constraint 3: rule %s: protected_asn %s connects in %s" \
+            print("OK: constraint 3: rule %s: protected_asn %s connects in %s" \
                 % (rule, protected_asn,
-                   ", ".join(inverted_topology[protected_asn]))
+                   ", ".join(inverted_topology[protected_asn])) )
 
     """
     constraint 4:
@@ -123,16 +123,16 @@ is not connected in enough regions." % (rule, protected_asn)
     """
     if not region == "everywhere" and allowed_upstream:
         if not "rtr_%s" % region in inverted_topology[allowed_upstream]:
-            print "ERROR: constraint 4: in filter rule %s: specified \
+            print("ERROR: constraint 4: in filter rule %s: specified \
 allowed_upstream %s is not connected in region %s" \
-                % (rule, allowed_upstream, region)
+                % (rule, allowed_upstream, region) )
         else:
-            print "OK: constraint 4: rule %s: allowed_upstream %s connects \
-in %s" % (rule, allowed_upstream, region)
+            print("OK: constraint 4: rule %s: allowed_upstream %s connects \
+in %s" % (rule, allowed_upstream, region) )
 
-print ""
-print "INFO: tested all rules, router configs will follow:"
-print ""
+print("")
+print("INFO: tested all rules, router configs will follow:")
+print("")
 
 # compile list of all ASNs we will block in the eBGP inbound
 # later on in the code we remove entries from this list
@@ -156,11 +156,11 @@ for asn in all_protected_asns:
 if vendor == "JunOS":
 # iterate over each router
     for router in network_topology:
-        print "router: %s" % router
-        print "  policy-options {"
+        print("router: %s" % router )
+        print("  policy-options {")
         # iterate over each neighbor connected to a router
         for neighbor in network_topology[router]:
-            print "    as-path lock-AS%s-in \".*" % (neighbor),
+            print("    as-path lock-AS%s-in \".*" % (neighbor) ),
 
             # list of protected_asns we will deny
             blocked_asns = all_protected_asns[:]
@@ -202,22 +202,22 @@ if vendor == "JunOS":
                     to_delete.append(protected_asn)
 
 #            else:
-#                print "LOOP 2: rule: %s, router: %s, neighbor: %s, protected_asn: %s, allowed: %s, region: %s" \
-#                    % (rule, router, neighbor, protected_asn, allowed_upstream, region)
+#                print("LOOP 2: rule: %s, router: %s, neighbor: %s, protected_asn: %s, allowed: %s, region: %s" \
+#                    % (rule, router, neighbor, protected_asn, allowed_upstream, region) )
 
 
             blocked_asns = sorted(set(blocked_asns) - set(to_delete))
-            print "(%s) .*\";" % "|".join(map(str, blocked_asns))
-        print "  }"
-        print ""
+            print("(%s) .*\";" % "|".join(map(str, blocked_asns)) )
+        print("  }")
+        print("")
 
 # YOLO no recycling of logic, direct exposure of logic output into printed
 # output. But this is a proof of concept after all :-)
 if vendor == "IOX":
     for router in network_topology:
-        print "router: %s" % router
+        print("router: %s" % router )
         for neighbor in network_topology[router]:
-            print "  as-path-set lock-AS%s-in" % (neighbor)
+            print("  as-path-set lock-AS%s-in" % (neighbor) )
             blocked_asns = all_protected_asns[:]
             to_delete = []
             no_match = True
@@ -238,8 +238,8 @@ if vendor == "IOX":
 
             blocked_asns = sorted(set(blocked_asns) - set(to_delete))
             for protected in map(str, blocked_asns[:-1]):
-                print "    ios-regex '_%s_',"% protected
-            print "    ios-regex '_%i_'" % blocked_asns[-1:][0]
-            print "  end-set"
-            print "  !"
-        print ""
+                print("    ios-regex '_%s_',"% protected )
+            print("    ios-regex '_%i_'" % blocked_asns[-1:][0] )
+            print("  end-set")
+            print("  !")
+        print("")
